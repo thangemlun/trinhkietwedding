@@ -74,7 +74,9 @@ class MemoryPageState extends State<MemoryBookPage> with AutomaticKeepAliveClien
             height: constraint.screenSize.height/2,
             padding: EdgeInsets.symmetric(horizontal: 24, vertical: 8),
             decoration: BoxDecoration(
-              image: DecorationImage(image: AssetImage("assets/images/half_book.png"))
+              image: DecorationImage(image: AssetImage("assets/images/half_book.png"),
+                fit: BoxFit.cover
+              )
             ),
             child:  BlessingBookView(constraint.screenSize, isMobile: true,),
           )

@@ -16,6 +16,14 @@ class ThirdMomentPage extends StatefulWidget{
 class ThirdMomentPageState extends State<ThirdMomentPage>
     with TickerProviderStateMixin, AutomaticKeepAliveClientMixin {
 
+  bool _cached = false;
+  static const String backgroundAssetPath = "assets/images/moment3_background.png";
+  static const String trinhKietAssetPath = "assets/images/tutrinh_tuankiet.png";
+
+  final Image trinhKietImg = Image.asset(trinhKietAssetPath);
+
+  final AssetImage backgroundImg = AssetImage(backgroundAssetPath);
+
   late final momentScript1Controller;
   final GlobalKey<TypingTextAnimState> typingTextState = GlobalKey<TypingTextAnimState>();
   late final coupleHeadLineController;
@@ -29,10 +37,30 @@ class ThirdMomentPageState extends State<ThirdMomentPage>
     coupleHeadLineController.forward();
   }
 
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    if (_cached) {
+      return;
+    } else {
+      _cached = true;
+      precacheImage(
+        const AssetImage(trinhKietAssetPath),
+        context,
+      );
+      precacheImage(
+        const AssetImage(backgroundAssetPath),
+        context,
+      );
+    }
+
+  }
 
   @override
   void dispose() {
     // TODO: implement dispose
+    print("dispose moment 3");
     momentScript1Controller.dispose();
     coupleHeadLineController.dispose();
     super.dispose();
@@ -63,7 +91,7 @@ class ThirdMomentPageState extends State<ThirdMomentPage>
           height: constraint.screenSize.height,
           decoration: BoxDecoration(
             image: DecorationImage(
-                image: AssetImage("assets/images/moment3_background.png"),
+                image: AssetImage(backgroundAssetPath),
                 fit: BoxFit.cover
             )
           ),
@@ -86,7 +114,7 @@ class ThirdMomentPageState extends State<ThirdMomentPage>
                 child: Container(
                   width: constraint.screenSize.width/4,
                   height: constraint.screenSize.height,
-                  child: Image.asset("assets/images/tutrinh_tuankiet.png"),
+                  child: trinhKietImg,
                 )).animate(
                 controller: coupleHeadLineController
             ).fadeIn(duration: 1.seconds),
@@ -96,7 +124,7 @@ class ThirdMomentPageState extends State<ThirdMomentPage>
               child: Container(
                 width: constraint.screenSize.width/2.5,
                 child:
-                buildMomentScript(fontSize: constraint.screenSize.width* 0.008),
+                buildMomentScript(fontSize: constraint.screenSize.width* 0.01),
               ).animate(
                   controller: momentScript1Controller
               ).fadeIn(duration: 1.seconds),
@@ -123,7 +151,7 @@ class ThirdMomentPageState extends State<ThirdMomentPage>
           Container(
             width: constraint.isMobile ? constraint.screenSize.width/1.2 :
             constraint.screenSize.width/2,
-            child: Image.asset("assets/images/tutrinh_tuankiet.png"),
+            child: Image.asset(trinhKietAssetPath),
           ).animate(
               controller: momentScript1Controller
           ).fadeIn(duration: 1.seconds),

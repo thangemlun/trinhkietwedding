@@ -24,15 +24,37 @@ class AgendaPageState extends State<AgendaPage> with TickerProviderStateMixin, A
   final GlobalKey<TypingTextAnimState> typingTextState = GlobalKey<TypingTextAnimState>();
   bool _isFormValid = false;
   bool isAttending = true;
+  bool _cached = false;
+  static const String giaTienPath = "assets/images/gia_tien.png";
+  static const String tiecCuoiPath = "assets/images/tiec_cuoi.png";
+  static const String vuQuyPath = "assets/images/vu_quy.png";
+  static const String thanhHonPath = "assets/images/thanh_hon.png";
+
+  final Image giaTienImg = Image.asset(giaTienPath);
+  final Image tiecCuoiImg = Image.asset(tiecCuoiPath);
+  final Image vuQuyImg = Image.asset(vuQuyPath);
+  final Image thanhHonImg = Image.asset(thanhHonPath);
 
   late AnimationController tagLineControl;
-  late AnimationController giaTienControl;
-  late AnimationController tiecCuoiControl;
-  late AnimationController vuQuyControl;
-  late AnimationController thanhHonControl;
-  late AnimationController chungVuiControl;
+  late AnimationController weddingStepControl;
   late AnimationController formAnimControl;
+  late Animation<double> fadeTagLineAnimation;
+  late Animation<double> fadeWeddingStepAnimation;
+  late Animation<double> fadeFormAnimation;
 
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_cached) {
+      return;
+    } else {
+      _cached = true;
+      precacheImage(const AssetImage(giaTienPath), context);
+      precacheImage(const AssetImage(tiecCuoiPath), context);
+      precacheImage(const AssetImage(vuQuyPath), context);
+      precacheImage(const AssetImage(thanhHonPath), context);
+    }
+  }
 
   @override
   void initState() {
@@ -40,23 +62,7 @@ class AgendaPageState extends State<AgendaPage> with TickerProviderStateMixin, A
         vsync: this,
         duration: Duration(seconds: 2)
     );
-    giaTienControl = AnimationController(
-        vsync: this,
-        duration: Duration(seconds: 2)
-    );
-    tiecCuoiControl = AnimationController(
-        vsync: this,
-        duration: Duration(seconds: 2)
-    );
-    vuQuyControl = AnimationController(
-        vsync: this,
-        duration: Duration(seconds: 2)
-    );
-    thanhHonControl = AnimationController(
-        vsync: this,
-        duration: Duration(seconds: 2)
-    );
-    chungVuiControl = AnimationController(
+    weddingStepControl = AnimationController(
         vsync: this,
         duration: Duration(seconds: 2)
     );
@@ -65,12 +71,20 @@ class AgendaPageState extends State<AgendaPage> with TickerProviderStateMixin, A
         duration: Duration(seconds: 2)
     );
 
+    fadeWeddingStepAnimation = Tween(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: weddingStepControl, curve: Curves.easeOut)
+    );
+
+    fadeFormAnimation = Tween(begin: 0.0, end: 1.0).animate(
+        CurvedAnimation(parent: formAnimControl, curve: Curves.easeOut)
+    );
+
+    fadeTagLineAnimation = Tween(begin: 0.0, end: 1.0).animate(
+        CurvedAnimation(parent: tagLineControl, curve: Curves.easeOut)
+    );
+
     tagLineControl.forward();
-    giaTienControl.forward();
-    tiecCuoiControl.forward();
-    vuQuyControl.forward();
-    thanhHonControl.forward();
-    chungVuiControl.forward();
+    weddingStepControl.forward();
     formAnimControl.forward();
   }
 
@@ -84,16 +98,8 @@ class AgendaPageState extends State<AgendaPage> with TickerProviderStateMixin, A
   void reAnimate() {
     tagLineControl.reset();
     tagLineControl.forward();
-    giaTienControl.reset();
-    giaTienControl.forward();
-    tiecCuoiControl.reset();
-    tiecCuoiControl.forward();
-    vuQuyControl.reset();
-    vuQuyControl.forward();
-    thanhHonControl.reset();
-    thanhHonControl.forward();
-    chungVuiControl.reset();
-    chungVuiControl.forward();
+    weddingStepControl.reset();
+    weddingStepControl.forward();
     formAnimControl.reset();
     formAnimControl.forward();
     typingTextState.currentState?.reload();
@@ -103,11 +109,7 @@ class AgendaPageState extends State<AgendaPage> with TickerProviderStateMixin, A
   @override
   void dispose() {
     tagLineControl.dispose();
-    giaTienControl.dispose();
-    tiecCuoiControl.dispose();
-    vuQuyControl.dispose();
-    thanhHonControl.dispose();
-    chungVuiControl.dispose();
+    weddingStepControl.dispose();
     formAnimControl.dispose();
     typingTextState.currentState?.dispose();
     super.dispose();
@@ -360,22 +362,17 @@ class AgendaPageState extends State<AgendaPage> with TickerProviderStateMixin, A
   Widget buildAgendaStep(double boxWidth) {
     print("wtf : $boxWidth");
     double minimizeW = boxWidth/12;
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        buildGiaTienStep(minimizeW).animate(controller: giaTienControl,)
-        .fadeIn(duration: 1.seconds)
-        .scale(delay: 1.seconds),
-        buildTiecCuoiStep(minimizeW).animate(controller: tiecCuoiControl,)
-            .fadeIn(duration: 1.seconds)
-            .scale(delay: 1.seconds),
-        buildVuQuyStep(minimizeW).animate(controller: vuQuyControl)
-            .fadeIn(duration: 1.seconds)
-            .scale(delay: 1.seconds),
-        buildThanhHonStep(minimizeW).animate(controller: thanhHonControl)
-            .fadeIn(duration: 1.seconds)
-            .scale(delay: 1.seconds),
-      ],
+    return FadeTransition(
+      opacity: fadeWeddingStepAnimation,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          buildGiaTienStep(minimizeW),
+          buildTiecCuoiStep(minimizeW),
+          buildVuQuyStep(minimizeW),
+          buildThanhHonStep(minimizeW),
+        ],
+      ),
     );
   }
 
@@ -386,9 +383,7 @@ class AgendaPageState extends State<AgendaPage> with TickerProviderStateMixin, A
     return Container(
       width: width,
       height: height,
-      decoration: BoxDecoration(
-          image: DecorationImage(image: AssetImage("assets/images/gia_tien.png"),
-          fit: BoxFit.cover)),
+      child: giaTienImg,
     );
   }
 
@@ -399,9 +394,7 @@ class AgendaPageState extends State<AgendaPage> with TickerProviderStateMixin, A
     return Container(
       width: width,
       height: height,
-      decoration: BoxDecoration(
-          image: DecorationImage(image: AssetImage("assets/images/tiec_cuoi.png"),
-              fit: BoxFit.cover)),
+      child: tiecCuoiImg,
     );
   }
 
@@ -412,9 +405,7 @@ class AgendaPageState extends State<AgendaPage> with TickerProviderStateMixin, A
     return Container(
       width: width,
       height: height,
-      decoration: BoxDecoration(
-          image: DecorationImage(image: AssetImage("assets/images/vu_quy.png"),
-              fit: BoxFit.cover)),
+      child: vuQuyImg,
     );
   }
 
@@ -426,9 +417,7 @@ class AgendaPageState extends State<AgendaPage> with TickerProviderStateMixin, A
     return Container(
       width: width,
       height: height,
-      decoration: BoxDecoration(
-          image: DecorationImage(image: AssetImage("assets/images/thanh_hon.png"),
-              fit: BoxFit.cover)),
+      child: thanhHonImg,
     );
   }
 
@@ -456,45 +445,46 @@ class AgendaPageState extends State<AgendaPage> with TickerProviderStateMixin, A
     String secondLine = "Nhớ xác nhận lịch trước 28.02.2026 nha!";
 
     print("chungVui with ${width}");
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-          width: width,
-          height: height,
-          child: Image.asset("assets/images/chung_vui.png"),
-        ).animate(controller: chungVuiControl)
-        .fadeIn(duration: 2.seconds)
-        .scale(),
-        LayoutBuilder(
-          builder: (context, constraint) {
-            double maxWidth = constraint.maxWidth;
-            return Container(
-                    margin: maxWidth < 600
-                        ? EdgeInsets.only(left: 25, bottom: 24)
-                        : EdgeInsets.only(left: 36, bottom: 24),
-                    child: TypingTextAnim(
-                      textStyle: commonTextStyle(),
-                      key: typingTextState,
-                        textSpan: TextSpan(
-                            style: TextStyle(
-                              fontFamily: "WelcomePlace",
-                              fontSize: maxWidth < 600 ? 12 : 18,
-                              fontWeight: FontWeight.w200,
-                              color: Colors.black,
-                            ),
-                            children: [
-                              TextSpan(text: "${firstLine}\n"),
-                              TextSpan(
-                                text: indentString(content: "${secondLine}",
-                                indentSize: firstLine.length - secondLine.length,
-                              ))
-                          ]
-                    )),
-                  );
-          }
-        )
-      ],
+    return FadeTransition(
+      opacity: fadeWeddingStepAnimation,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: width,
+            height: height,
+            child: Image.asset("assets/images/chung_vui.png"),
+          ),
+          LayoutBuilder(
+            builder: (context, constraint) {
+              double maxWidth = constraint.maxWidth;
+              return Container(
+                      margin: maxWidth < 600
+                          ? EdgeInsets.only(left: 25, bottom: 24)
+                          : EdgeInsets.only(left: 36, bottom: 24),
+                      child: TypingTextAnim(
+                        textStyle: commonTextStyle(),
+                        key: typingTextState,
+                          textSpan: TextSpan(
+                              style: TextStyle(
+                                fontFamily: "WelcomePlace",
+                                fontSize: boxWith*0.004,
+                                fontWeight: FontWeight.w200,
+                                color: Colors.black,
+                              ),
+                              children: [
+                                TextSpan(text: "${firstLine}\n"),
+                                TextSpan(
+                                  text: indentString(content: "${secondLine}",
+                                  indentSize: firstLine.length - secondLine.length,
+                                ))
+                            ]
+                      )),
+                    );
+            }
+          )
+        ],
+      ),
     );
   }
 

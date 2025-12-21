@@ -18,6 +18,8 @@ class DonatePageState extends State<DonatePage> with TickerProviderStateMixin {
   late final momentScript1Controller;
   final GlobalKey<TypingTextAnimState> typingTextState = GlobalKey<TypingTextAnimState>();
   late final coupleHeadLineController;
+  bool _cached = false;
+  static const String donateQRpath = "assets/images/donate_page_background.png";
 
   @override
   void initState() {
@@ -25,6 +27,17 @@ class DonatePageState extends State<DonatePage> with TickerProviderStateMixin {
     momentScript1Controller = AnimationController(vsync: this, duration: Duration(seconds: 1));
     coupleHeadLineController = AnimationController(vsync: this, duration: Duration(seconds: 1));
     reAnimate();
+  }
+
+  @override
+  void didChangeDependencies() {
+    if (_cached) {
+      return;
+    } else {
+      _cached = true;
+      precacheImage(AssetImage(donateQRpath),
+          context);
+    }
   }
 
   void reload() {
@@ -61,7 +74,7 @@ class DonatePageState extends State<DonatePage> with TickerProviderStateMixin {
           height: constraint.screenSize.height,
           decoration: BoxDecoration(
             image: DecorationImage(
-                image: AssetImage("assets/images/donate_page_background.png"),
+                image: AssetImage(donateQRpath),
                 fit: BoxFit.cover
             )
           ),

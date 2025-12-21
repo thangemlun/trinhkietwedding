@@ -83,7 +83,7 @@ class SecondMomentPageState extends State<SecondMomentPage>
               child: SizedBox(
                 width: constraint.screenSize.width/4,
                 height: constraint.screenSize.height/2,
-                child: buildMomentScript(constraint.screenSize.width* 0.008),
+                child: buildMomentScript(constraint.screenSize.width* 0.01),
               ).animate(
                   controller: momentScript1Controller
               ).fadeIn(duration: 1.seconds),

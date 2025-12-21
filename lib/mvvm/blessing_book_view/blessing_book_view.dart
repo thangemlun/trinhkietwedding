@@ -71,12 +71,8 @@ class BlessingBookView extends StatelessWidget{
 
   Widget buildBlessingBookMobile(List<Attendee> attendees) {
     return SizedBox(
-        height: screenSize.height * 0.2,
-        child: Padding(
-          padding: EdgeInsets.only(
-              left: screenSize.width * 0.05,
-              top: screenSize.height * 0.05),
-          child: ListView.builder(
+        height: screenSize.height/5,
+        child: ListView.builder(
               itemCount: attendees.length,
               itemBuilder: (context, index) {
                 return Column(
@@ -84,7 +80,7 @@ class BlessingBookView extends StatelessWidget{
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Text(attendees[index].name,
-                      style: TextStyleUtil.luxuriousTextStyle(screenSize.width * 0.08),
+                      style: TextStyleUtil.luxuriousTextStyle(screenSize.width * 0.05),
                     ),
                     Text(attendees[index].blessing,
                       style: TextStyleUtil.commonTextStyle(screenSize.width * 0.02),
@@ -92,7 +88,6 @@ class BlessingBookView extends StatelessWidget{
                   ],
                 );
               }),
-        )
     );
   }
 
