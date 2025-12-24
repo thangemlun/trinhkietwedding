@@ -10,7 +10,7 @@ class WelcomePage extends StatefulWidget {
 }
 
 class WelcomePageState extends State<WelcomePage>
-    with TickerProviderStateMixin, AutomaticKeepAliveClientMixin{
+    with TickerProviderStateMixin{
 
   late AnimationController welComeTextController;
   late AnimationController placeTextController;
@@ -182,8 +182,4 @@ class WelcomePageState extends State<WelcomePage>
       color: Colors.white,
     );
   }
-
-  @override
-  // TODO: implement wantKeepAlive
-  bool get wantKeepAlive => true;
 }

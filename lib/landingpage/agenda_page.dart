@@ -7,14 +7,14 @@ import 'package:wedding_landing_page/utils/attendance_selector.dart';
 import '../utils/typer_animation.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:responsive_builder/responsive_builder.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 class AgendaPage extends StatefulWidget{
   AgendaPage({Key? key}) : super(key: key);
   @override
   State<StatefulWidget> createState() => AgendaPageState();
 }
 
-class AgendaPageState extends State<AgendaPage> with TickerProviderStateMixin, AutomaticKeepAliveClientMixin{
-
+class AgendaPageState extends State<AgendaPage> with TickerProviderStateMixin{
   final GlobalKey<FormBuilderState> _formKey = GlobalKey<FormBuilderState>();
   final GlobalKey<FormBuilderFieldState> _nameKey = GlobalKey<FormBuilderFieldState>();
   final GlobalKey<FormBuilderFieldState> _optionalKey = GlobalKey<FormBuilderFieldState>();
@@ -45,15 +45,6 @@ class AgendaPageState extends State<AgendaPage> with TickerProviderStateMixin, A
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    if (_cached) {
-      return;
-    } else {
-      _cached = true;
-      precacheImage(const AssetImage(giaTienPath), context);
-      precacheImage(const AssetImage(tiecCuoiPath), context);
-      precacheImage(const AssetImage(vuQuyPath), context);
-      precacheImage(const AssetImage(thanhHonPath), context);
-    }
   }
 
   @override
@@ -89,7 +80,6 @@ class AgendaPageState extends State<AgendaPage> with TickerProviderStateMixin, A
   }
 
   void reload() {
-    print("reload");
     setState(() {
       reAnimate();
     });
@@ -108,6 +98,7 @@ class AgendaPageState extends State<AgendaPage> with TickerProviderStateMixin, A
 
   @override
   void dispose() {
+    print("agenda page dispose");
     tagLineControl.dispose();
     weddingStepControl.dispose();
     formAnimControl.dispose();
@@ -120,7 +111,7 @@ class AgendaPageState extends State<AgendaPage> with TickerProviderStateMixin, A
     return ResponsiveBuilder(
       builder: (context, constraint) {
         return Container(
-          child: constraint.isDesktop ? wideScreen(constraint) : mobileScreen(),
+          child: constraint.isDesktop ? wideScreen(constraint) : mobileScreen(constraint),
         );
       }
     );
@@ -154,34 +145,36 @@ class AgendaPageState extends State<AgendaPage> with TickerProviderStateMixin, A
     );
   }
 
-  Widget mobileScreen() {
+  Widget mobileScreen(SizingInformation constraint) {
     double width = MediaQuery.of(context).size.width;
     return Container(
         decoration: BoxDecoration(
           color: Color(0xFFeae5db),
         ),
         padding: EdgeInsets.all(16),
-        child: Column(
-          children: [
-            Padding(padding: EdgeInsets.all(8.0),
-              child: buildTagLine(width * 4),
-            ),
-
-            Padding(padding: EdgeInsets.all(8.0),
-              child: buildGiaTienStep(width/1.4),
-            ),
-            Padding(padding: EdgeInsets.all(8.0),
-              child: buildTiecCuoiStep(width/1.4),
-            ),
-            Padding(padding: EdgeInsets.all(8.0),
-              child: buildVuQuyStep(width/1.4),
-            ),
-            Padding(padding: EdgeInsets.all(8.0),
-              child: buildThanhHonStep(width/1.4),
-            ),
-            buildChungVui(width*6),
-            attendeeForm(),
-          ],
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              Padding(padding: EdgeInsets.all(8.0),
+                child: buildTagLine(width * 4),
+              ),
+          
+              Padding(padding: EdgeInsets.all(8.0),
+                child: buildGiaTienStep(width/1.4),
+              ),
+              Padding(padding: EdgeInsets.all(8.0),
+                child: buildTiecCuoiStep(width/1.4),
+              ),
+              Padding(padding: EdgeInsets.all(8.0),
+                child: buildVuQuyStep(width/1.4),
+              ),
+              Padding(padding: EdgeInsets.all(8.0),
+                child: buildThanhHonStep(width/1.4),
+              ),
+              buildChungVui(width*6),
+              attendeeForm(),
+            ],
+          ),
         ),
       );
   }
@@ -227,7 +220,6 @@ class AgendaPageState extends State<AgendaPage> with TickerProviderStateMixin, A
             AttendanceSelector(
                 initialValue: isAttending,
                 onChanged: (value) {
-              print("selected: $value");
             }),
             SizedBox(height: 16,),
 
@@ -246,7 +238,7 @@ class AgendaPageState extends State<AgendaPage> with TickerProviderStateMixin, A
               ]),
             ),
             SizedBox(height: 16,),
-            Text("Lời chúc của bạn*",
+            Text("Chuyên mục lời chúc yêu thương 💖*",
               style: commonTextStyle(),
             ),
             SizedBox(height: 12,),
@@ -260,7 +252,7 @@ class AgendaPageState extends State<AgendaPage> with TickerProviderStateMixin, A
               ]),
             ),
             SizedBox(height: 16,),
-            Text("Bạn tặng tụi mình 1 tiết mục nha! \nĐăng ký bài bên dưới đây nè",
+            Text("Bạn tặng tụi mình 1 tiết mục nha! Đăng ký đây nè ↓",
               style: commonTextStyle(),),
             SizedBox(height: 12,),
             FormBuilderTextField(
@@ -281,14 +273,12 @@ class AgendaPageState extends State<AgendaPage> with TickerProviderStateMixin, A
               onPressed: _isFormValid ? () {
                 if (_formKey.currentState?.saveAndValidate() ?? false) {
                   final data = _formKey.currentState!.value;
-                  print('Dữ liệu gửi: $data');
                   Attendee attendee = Attendee(name: data['name'],
                       willYouCome: isAttending,
                       optional: data['optional'],
                       blessing: data['blessing'],
                       performance: data['performance'],
                       createdTime: DateTime.now());
-                  print(attendee.toMap());
                   blessingService.submitAttendee(attendee).whenComplete(() {
                     print("Save attendee successful");
                     _formKey.currentState?.reset();
@@ -297,7 +287,7 @@ class AgendaPageState extends State<AgendaPage> with TickerProviderStateMixin, A
               } : null,
               child: Center(
                   child: Text('BẤM VÀO ĐÂY ĐỂ GỬI NÈ \n'
-                          'TỤI MÌNH RẤT MONG ĐỢI ĐƯỢC GẶP BẠN!',
+                          'Sự hiện diện của bạn sẽ làm buổi tiệc thêm trọng vẹn ♥',
                     style: commonTextStyle(color: Colors.white),
                     textAlign: TextAlign.center,
                     ),
@@ -360,7 +350,6 @@ class AgendaPageState extends State<AgendaPage> with TickerProviderStateMixin, A
   }
 
   Widget buildAgendaStep(double boxWidth) {
-    print("wtf : $boxWidth");
     double minimizeW = boxWidth/12;
     return FadeTransition(
       opacity: fadeWeddingStepAnimation,
@@ -376,13 +365,13 @@ class AgendaPageState extends State<AgendaPage> with TickerProviderStateMixin, A
     );
   }
 
-  Widget buildGiaTienStep(double boxWidth) {
+  Widget buildGiaTienStep(double boxWidth, {double? heightOvr}) {
     double width = boxWidth;
     double aspectRatio = 1466/ 2160;
     double height = width/aspectRatio;
     return Container(
       width: width,
-      height: height,
+      height: heightOvr ?? height,
       child: giaTienImg,
     );
   }
@@ -443,8 +432,6 @@ class AgendaPageState extends State<AgendaPage> with TickerProviderStateMixin, A
     double height = width/aspectRatio;
     String firstLine = "Sự hiện diện của bạn là niềm vinh hạnh của vợ chồng mình.";
     String secondLine = "Nhớ xác nhận lịch trước 28.02.2026 nha!";
-
-    print("chungVui with ${width}");
     return FadeTransition(
       opacity: fadeWeddingStepAnimation,
       child: Column(
@@ -499,7 +486,4 @@ class AgendaPageState extends State<AgendaPage> with TickerProviderStateMixin, A
     return content;
   }
 
-  @override
-  // TODO: implement wantKeepAlive
-  bool get wantKeepAlive => true;
 }

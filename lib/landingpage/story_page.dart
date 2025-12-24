@@ -8,7 +8,7 @@ class StoryPage extends StatefulWidget{
 }
 
 class StoryPageState extends State<StoryPage>
-    with TickerProviderStateMixin, AutomaticKeepAliveClientMixin {
+    with TickerProviderStateMixin {
 
   static const double adjust1200FontSize = 20;
   static const double adjustless1200FontSize = 12;
@@ -126,6 +126,7 @@ class StoryPageState extends State<StoryPage>
         child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
+                SizedBox(height: 50,),
                 Container(
                     width: constraint.screenSize.width /1.5,
                     child: Image.asset("assets/images/story_photo.png"),
@@ -248,8 +249,4 @@ class StoryPageState extends State<StoryPage>
         ),
     );
   }
-
-  @override
-  // TODO: implement wantKeepAlive
-  bool get wantKeepAlive => true;
 }

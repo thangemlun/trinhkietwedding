@@ -9,7 +9,7 @@ class MemoryBookPage extends StatefulWidget{
   State<StatefulWidget> createState() => MemoryPageState();
 }
 
-class MemoryPageState extends State<MemoryBookPage> with AutomaticKeepAliveClientMixin {
+class MemoryPageState extends State<MemoryBookPage>{
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
@@ -85,7 +85,4 @@ class MemoryPageState extends State<MemoryBookPage> with AutomaticKeepAliveClien
     );
   }
 
-  @override
-  // TODO: implement wantKeepAlive
-  bool get wantKeepAlive => true;
 }

@@ -26,7 +26,7 @@ class BlessingPopUpView extends StatelessWidget {
               if (value.isLoading || value.attendees.isEmpty) {
                   return SizedBox(height: 0,);
                 }else {
-                  return blessingMarquee(blessingViewModel.attendees);
+                  return blessingMarquee(blessingViewModel.attendees, context);
                 }
               },
           ),
@@ -35,7 +35,7 @@ class BlessingPopUpView extends StatelessWidget {
     );
   }
 
-  Widget blessingMarquee(List<Attendee> attendees) {
+  Widget blessingMarquee(List<Attendee> attendees, BuildContext context) {
     String text = "";
     for (Attendee attendee in attendees) {
       text += "${attendee.name}: ${attendee.blessing}\t 💕 \t";
@@ -43,14 +43,25 @@ class BlessingPopUpView extends StatelessWidget {
     return Align(
       alignment: Alignment.topCenter,
       child: Container(
-        width: 400,
-        height: 50,
+        width: double.infinity,
+        height: MediaQuery.of(context).size.height * 0.05,
         padding: EdgeInsets.symmetric(vertical: 8),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12),
-          border: BoxBorder.all(
-            color: Color(0xFFe6e4dd),
-            width: 5.0, style: BorderStyle.solid
+          border: BoxBorder.fromLTRB(
+            top: BorderSide.none,
+            right: BorderSide(
+                color: Color(0xFFe6e4dd),
+                width: 2.0, style: BorderStyle.solid
+            ),
+            left: BorderSide(
+                color: Color(0xFFe6e4dd),
+                width: 2.0, style: BorderStyle.solid
+            ),
+            bottom: BorderSide(
+                color: Color(0xFFe6e4dd),
+                width: 2.0, style: BorderStyle.solid
+            )
           ),
           shape: BoxShape.rectangle,
         ),

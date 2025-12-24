@@ -7,7 +7,7 @@ class InvitePage extends StatefulWidget{
 }
 
 class InvitePageState extends State<InvitePage>
-    with TickerProviderStateMixin, AutomaticKeepAliveClientMixin {
+    with TickerProviderStateMixin{
   late AnimationController _controller;
   late Animation<Offset> _animation;
 
@@ -154,8 +154,4 @@ class InvitePageState extends State<InvitePage>
       return deviceWidth * 1;
     }
   }
-
-  @override
-  // TODO: implement wantKeepAlive
-  bool get wantKeepAlive => true;
 }

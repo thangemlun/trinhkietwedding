@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:responsive_builder/responsive_builder.dart';
-
+import 'package:flutter_svg/flutter_svg.dart';
 import '../utils/typer_animation.dart';
 class ThirdMomentPage extends StatefulWidget{
 
@@ -14,7 +14,7 @@ class ThirdMomentPage extends StatefulWidget{
 }
 
 class ThirdMomentPageState extends State<ThirdMomentPage>
-    with TickerProviderStateMixin, AutomaticKeepAliveClientMixin {
+    with TickerProviderStateMixin {
 
   bool _cached = false;
   static const String backgroundAssetPath = "assets/images/moment3_background.png";
@@ -120,11 +120,18 @@ class ThirdMomentPageState extends State<ThirdMomentPage>
             ).fadeIn(duration: 1.seconds),
             Transform.translate(
               offset: Offset(constraint.screenSize.width*0.01,
-                  -constraint.screenSize.height * 0.2),
+                  0),
               child: Container(
                 width: constraint.screenSize.width/2.5,
                 child:
-                buildMomentScript(fontSize: constraint.screenSize.width* 0.01),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    buildMomentScript(fontSize: constraint.screenSize.width* 0.01),
+                    SvgPicture.asset("assets/images/13.svg",
+                    height: constraint.screenSize.height * 0.3,)
+                  ],
+                ),
               ).animate(
                   controller: momentScript1Controller
               ).fadeIn(duration: 1.seconds),
@@ -140,6 +147,7 @@ class ThirdMomentPageState extends State<ThirdMomentPage>
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          SizedBox(height: 30,),
           Container(
             width: constraint.isMobile ? constraint.screenSize.width:
             constraint.screenSize.width,
@@ -147,13 +155,14 @@ class ThirdMomentPageState extends State<ThirdMomentPage>
           ).animate(
               controller: momentScript1Controller
           ).fadeIn(duration: 1.seconds),
-
+          SvgPicture.asset("assets/images/13.svg",
+            height: constraint.screenSize.height/5,),
           Container(
             width: constraint.isMobile ? constraint.screenSize.width/1.2 :
             constraint.screenSize.width/2,
             child: Image.asset(trinhKietAssetPath),
           ).animate(
-              controller: momentScript1Controller
+              controller: coupleHeadLineController
           ).fadeIn(duration: 1.seconds),
         ],
       ),
@@ -186,9 +195,5 @@ class ThirdMomentPageState extends State<ThirdMomentPage>
       ),
     );
   }
-
-  @override
-  // TODO: implement wantKeepAlive
-  bool get wantKeepAlive => true;
 
 }

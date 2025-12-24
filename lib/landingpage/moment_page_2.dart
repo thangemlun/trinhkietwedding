@@ -14,7 +14,7 @@ class SecondMomentPage extends StatefulWidget{
 }
 
 class SecondMomentPageState extends State<SecondMomentPage>
-    with TickerProviderStateMixin, AutomaticKeepAliveClientMixin {
+    with TickerProviderStateMixin{
 
   late final momentScript1Controller;
   final GlobalKey<TypingTextAnimState> typingTextState = GlobalKey<TypingTextAnimState>();
@@ -108,6 +108,7 @@ class SecondMomentPageState extends State<SecondMomentPage>
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
+          SizedBox(height: 30,),
           Container(
             width: constraint.isMobile ? constraint.screenSize.width:
             constraint.screenSize.width,
@@ -152,9 +153,4 @@ class SecondMomentPageState extends State<SecondMomentPage>
       ),
     );
   }
-
-  @override
-  // TODO: implement wantKeepAlive
-  bool get wantKeepAlive => true;
-
 }

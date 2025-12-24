@@ -11,7 +11,7 @@ class MomentPage extends StatefulWidget{
 }
 
 class MomentPageState extends State<MomentPage>
-    with TickerProviderStateMixin, AutomaticKeepAliveClientMixin{
+    with TickerProviderStateMixin{
 
   late final AnimationController momentScript1Controller;
   late final AnimationController coupleHeadLineController;
@@ -104,6 +104,7 @@ class MomentPageState extends State<MomentPage>
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          SizedBox(height: 30,),
           Container(
             width: constraint.isMobile ? constraint.screenSize.width :
             constraint.screenSize.width/2,
@@ -123,8 +124,4 @@ class MomentPageState extends State<MomentPage>
       ),
     );
   }
-
-  @override
-  // TODO: implement wantKeepAlive
-  bool get wantKeepAlive => true;
 }

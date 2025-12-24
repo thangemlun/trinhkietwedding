@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:responsive_builder/responsive_builder.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import '../utils/typer_animation.dart';
 class DonatePage extends StatefulWidget{
@@ -20,7 +21,7 @@ class DonatePageState extends State<DonatePage> with TickerProviderStateMixin {
   late final coupleHeadLineController;
   bool _cached = false;
   static const String donateQRpath = "assets/images/donate_page_background.png";
-
+  double aspectRatio = 16/9;
   @override
   void initState() {
     // TODO: implement initState
@@ -70,30 +71,44 @@ class DonatePageState extends State<DonatePage> with TickerProviderStateMixin {
     return ResponsiveBuilder(
       builder: (context, constraint) {
         return Container(
-          width: double.infinity,
-          height: constraint.screenSize.height,
+          width: constraint.screenSize.width,
+          height: constraint.screenSize.width / aspectRatio,
           decoration: BoxDecoration(
             image: DecorationImage(
                 image: AssetImage(donateQRpath),
                 fit: BoxFit.cover
             )
           ),
-          child: constraint.isDesktop ? buildDesktopView(constraint.screenSize.width)
+          child: constraint.isDesktop
+              ? buildDesktopView(constraint.screenSize)
               : buildMobileView(constraint),
         );
       },
     );
   }
 
-  Widget buildDesktopView(double width) {
+  Widget buildDesktopView(Size size) {
+    double height = size.width / aspectRatio;
+    print("mmt3:w-${size.width} & h-${height}");
     return Stack(
       children: [
         Positioned(
-          left: width/5,
-          top: 50,
+          left: size.width * 0.2,
+          bottom: height * 0.2,
           child: Container(
-            width: width/4,
+            width: size.width/4,
             child: Image.asset("assets/images/donate_QR.png"),
+          ).animate(
+              controller: momentScript1Controller
+          ).fadeIn(duration: 1.seconds),
+        ),
+        Positioned(
+          right: size.width * 0.2,
+          bottom: height * 0.12,
+          child: Container(
+            width: size.width/4,
+            height: size.height* 0.4,
+            child: SvgPicture.asset("assets/images/26.svg"),
           ).animate(
               controller: momentScript1Controller
           ).fadeIn(duration: 1.seconds),
@@ -109,12 +124,18 @@ class DonatePageState extends State<DonatePage> with TickerProviderStateMixin {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Container(
-            width: constraint.isMobile ? constraint.screenSize.width:
-            constraint.screenSize.width,
+            width: constraint.screenSize.width,
             child: Image.asset("assets/images/donate_QR.png"),
           ).animate(
               controller: momentScript1Controller
           ).fadeIn(duration: 1.seconds),
+          Container(
+            width: constraint.screenSize.width,
+            height: constraint.screenSize.height * 0.2,
+            child: SvgPicture.asset("assets/images/26.svg"),
+          ).animate(
+              controller: momentScript1Controller
+          ).fadeIn(duration: 1.seconds)
         ],
       ),
     );
